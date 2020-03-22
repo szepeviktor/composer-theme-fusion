@@ -34,10 +34,10 @@ class ThemeFusionPackage extends Package
     public function __construct(string $name, string $slug, string $version, string $url, ThemeFusionApi $api)
     {
         $this->fusionName = $name;
+        // FIXME Ditch url?
         $this->distUrl = $url;
         $this->api = $api;
 
-        // Set fake versions to avoid API call
         parent::__construct(self::VENDOR_NAME . '/' . $slug, $version, $version);
     }
 

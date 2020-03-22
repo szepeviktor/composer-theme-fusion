@@ -28,7 +28,7 @@ Get its value with e.g. WP-CLI `wp option get fusion_registration`.
 ```json
 {
   "config": {
-    "envato": {
+    "theme-fusion": {
       "token": "YOUR THEME-FUSION TOKEN"
     }
   }
