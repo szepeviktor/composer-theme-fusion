@@ -72,7 +72,7 @@ class ThemeFusionApi
     {
         list($nonce, $timestamp) = $this->getNonce($name);
 
-        // TODO If responses is HTTP/302 download URL is in "Location" header
+        // TODO If response is HTTP/302 download URL is in "Location" header
 
         return self::API_BASE_URL . '/?' . \http_build_query(
             [
