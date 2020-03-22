@@ -31,14 +31,15 @@ class ThemeFusionPackage extends Package
      */
     protected $api;
 
-    public function __construct(string $name, string $slug, string $version, string $url, ThemeFusionApi $api)
+    public function __construct(string $fusionName, string $slug, string $prettyVersion, string $distUrl, ThemeFusionApi $api)
     {
-        $this->fusionName = $name;
+        $this->fusionName = $fusionName;
         // FIXME Ditch url?
-        $this->distUrl = $url;
+        $this->distUrl = $distUrl;
         $this->api = $api;
 
-        parent::__construct(self::VENDOR_NAME . '/' . $slug, $version, $version);
+        $versionParser = new VersionParser();
+        parent::__construct(self::VENDOR_NAME . '/' . $slug, $versionParser->normalize($prettyVersion), $prettyVersion);
     }
 
     public function isDev(): bool
