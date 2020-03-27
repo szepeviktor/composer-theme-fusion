@@ -27,12 +27,13 @@ class ThemeFusionApi
     /**
      * @var string
      */
-    protected $themeVersion = '5.9.0'; // FIXME
+    protected $themeVersion;
 
-    public function __construct(IOInterface $io, Config $config, string $token)
+    public function __construct(IOInterface $io, Config $config, string $token, string $themeVersion)
     {
         $this->remoteFilesystem = Factory::createRemoteFilesystem($io, $config);
         $this->token = $token;
+        $this->themeVersion = $themeVersion;
     }
 
     /**

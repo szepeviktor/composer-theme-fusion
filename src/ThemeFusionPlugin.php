@@ -44,7 +44,8 @@ class ThemeFusionPlugin implements PluginInterface
             return;
         }
 
-        $this->api = new ThemeFusionApi($io, $composerConfig, $this->config->getToken());
+        $this->api = new ThemeFusionApi($io, $composerConfig,
+            $this->config->getToken(), $this->config->getThemeVersion());
         $rm = $composer->getRepositoryManager();
         $rm->addRepository($this->generateRepository());
     }
