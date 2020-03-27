@@ -20,16 +20,17 @@ composer global require --update-no-dev szepeviktor/composer-theme-fusion
 
 ### Configuration
 
-Add your token to your `config.json` (in `$COMPOSER_HOME`).
+Add your token to your `config.json` (in `$COMPOSER_HOME`) and your theme version.
 
-You find the `token` in WordPress option `fusion_registration`.
+You find the `token` and `themeVersion` in WordPress option `fusion_registration`.
 Get its value with e.g. WP-CLI `wp option get fusion_registration`.
 
 ```json
 {
   "config": {
     "theme-fusion": {
-      "token": "YOUR THEME-FUSION TOKEN"
+      "token": "YOUR THEME-FUSION TOKEN",
+      "themeVersion": "YOUR THEME-FUSION VERSION, EG. '6.2.2'"
     }
   }
 }
