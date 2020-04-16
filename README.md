@@ -22,8 +22,8 @@ composer global require --update-no-dev szepeviktor/composer-theme-fusion
 
 Add your token and theme version to your `config.json` (in `$COMPOSER_HOME`).
 
-You find the `token` in WordPress option `fusion_registration`.
-Get its value with e.g. WP-CLI `wp option get fusion_registration`.
+You find the `token` in WordPress option `fusion_registration_data`.
+Get its value with e.g. WP-CLI `wp option get fusion_registration_data`.
 
 ```json
 {
@@ -40,7 +40,8 @@ Get its value with e.g. WP-CLI `wp option get fusion_registration`.
 
 Once the plugin is installed and configured,
 you can simply install any of the **premium** plugins (e.g. `theme-fusion/fusion-core`) as Composer packages.
-You find the list plugin slugs in this JSON: `https://updates.theme-fusion.com/?avada_action=get_plugins&avada_version=`
+You find the list plugin slugs in this JSON:  
+`https://updates.theme-fusion.com/?avada_action=get_plugins&avada_version=`
 
 :bulb: Use the vendor name `theme-fusion`.
 
