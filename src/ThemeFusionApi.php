@@ -31,7 +31,7 @@ class ThemeFusionApi
 
     public function __construct(IOInterface $io, Config $config, string $token, string $themeVersion)
     {
-        $this->remoteFilesystem = Factory::createRemoteFilesystem($io, $config);
+        $this->remoteFilesystem = Factory::createHttpDownloader($io, $config);
         $this->token = $token;
         $this->themeVersion = $themeVersion;
     }
@@ -43,14 +43,12 @@ class ThemeFusionApi
     {
         $plugins = [];
 
-        $responseBody = $this->remoteFilesystem->getContents(
-            self::API_DOMAIN,
-            self::API_BASE_URL . '/?' . \http_build_query(['avada_action' => 'get_plugins', 'avada_version' => $this->themeVersion]),
-            false // Hide progress indicator
+        $responseBody = $this->remoteFilesystem->get(
+            self::API_BASE_URL . '/?' . \http_build_query(['avada_action' => 'get_plugins', 'avada_version' => $this->themeVersion])
         );
 
-        if ($this->remoteFilesystem->findStatusCode($this->remoteFilesystem->getLastHeaders()) === 200) {
-            $pluginData = \json_decode($responseBody, true);
+        if ($responseBody->getStatusCode() === 200) {
+            $pluginData = \json_decode($responseBody->getBody(), true);
             foreach ($pluginData as $plugin) {
                 // Non-premium plugins have no version
                 if (! $plugin['premium']) {
@@ -81,7 +79,8 @@ class ThemeFusionApi
                 't' => $timestamp,
                 'avada_action' => 'get_download',
                 'item_name' => $name,
-                'ver' => $this->themeVersion,
+		'ver' => $this->themeVersion,
+		'token' => $this->token,
             ]);
     }
     /**
@@ -89,24 +88,22 @@ class ThemeFusionApi
      */
     protected function getNonce(string $name): array
     {
-        $responseBody = $this->remoteFilesystem->getContents(
-            self::API_DOMAIN,
+        $responseBody = $this->remoteFilesystem->get(
             self::API_BASE_URL . '/?' . \http_build_query(
             [
                 'token' => $this->token,
                 'avada_action' => 'request_download',
                 'item_name' => $name,
                 'ver' => $this->themeVersion,
-            ]),
-            false
+            ])
         );
 
-        if ($this->remoteFilesystem->findStatusCode($this->remoteFilesystem->getLastHeaders()) !== 200) {
+	if ($responseBody->getStatusCode() !== 200) {
+		error_log('blah');
             return ['', 0];
         }
 
-        // Nonce and timestamp
-        $nonceData = \explode('|', $responseBody);
+	$nonceData = \explode('|', $responseBody->getBody());
 
         return [$nonceData[0], (int)$nonceData[1]];
     }

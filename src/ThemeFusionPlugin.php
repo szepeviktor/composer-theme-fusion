@@ -41,6 +41,7 @@ class ThemeFusionPlugin implements PluginInterface
         $composerConfig = $composer->getConfig();
         $this->config = new ThemeFusionConfig($composerConfig);
         if (! $this->config->isValid()) {
+		    print("Invalid config");
             return;
         }
 
@@ -48,6 +49,14 @@ class ThemeFusionPlugin implements PluginInterface
             $this->config->getToken(), $this->config->getThemeVersion());
         $rm = $composer->getRepositoryManager();
         $rm->addRepository($this->generateRepository());
+    }
+
+    public function deactivate(Composer $composer, IOInterface $io)
+    {
+    }
+
+    public function uninstall(Composer $composer, IOInterface $io)
+    {
     }
 
     protected function generateRepository(): ArrayRepository
