@@ -11,7 +11,6 @@ use Composer\Util\RemoteFilesystem;
 
 class ThemeFusionApi
 {
-    public const API_DOMAIN = 'updates.theme-fusion.com';
     public const API_BASE_URL = 'https://updates.theme-fusion.com';
 
     /**
@@ -43,12 +42,12 @@ class ThemeFusionApi
     {
         $plugins = [];
 
-        $responseBody = $this->remoteFilesystem->get(
+        $apiResponse = $this->remoteFilesystem->get(
             self::API_BASE_URL . '/?' . \http_build_query(['avada_action' => 'get_plugins', 'avada_version' => $this->themeVersion])
         );
 
-        if ($responseBody->getStatusCode() === 200) {
-            $pluginData = \json_decode($responseBody->getBody(), true);
+        if ($apiResponse->getStatusCode() === 200) {
+            $pluginData = \json_decode($apiResponse->getBody(), true);
             foreach ($pluginData as $plugin) {
                 // Non-premium plugins have no version
                 if (! $plugin['premium']) {
@@ -79,8 +78,8 @@ class ThemeFusionApi
                 't' => $timestamp,
                 'avada_action' => 'get_download',
                 'item_name' => $name,
-		'ver' => $this->themeVersion,
-		'token' => $this->token,
+                'ver' => $this->themeVersion,
+                'token' => $this->token,
             ]);
     }
     /**
@@ -88,7 +87,7 @@ class ThemeFusionApi
      */
     protected function getNonce(string $name): array
     {
-        $responseBody = $this->remoteFilesystem->get(
+        $apiResponse = $this->remoteFilesystem->get(
             self::API_BASE_URL . '/?' . \http_build_query(
             [
                 'token' => $this->token,
@@ -98,12 +97,12 @@ class ThemeFusionApi
             ])
         );
 
-	if ($responseBody->getStatusCode() !== 200) {
+	if ($apiResponse->getStatusCode() !== 200) {
 		error_log('blah');
             return ['', 0];
-        }
+    }
 
-	$nonceData = \explode('|', $responseBody->getBody());
+	$nonceData = \explode('|', $apiResponse->getBody());
 
         return [$nonceData[0], (int)$nonceData[1]];
     }
