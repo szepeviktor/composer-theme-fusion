@@ -41,7 +41,6 @@ class ThemeFusionPlugin implements PluginInterface
         $composerConfig = $composer->getConfig();
         $this->config = new ThemeFusionConfig($composerConfig);
         if (! $this->config->isValid()) {
-		    error_log("Invalid config");
             return;
         }
 
