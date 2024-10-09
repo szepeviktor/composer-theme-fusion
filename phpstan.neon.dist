@@ -3,11 +3,3 @@ parameters:
     paths:
         - src/
     ignoreErrors:
-        -
-            message: "#^Parameter \\#1 \\$json of function json_decode expects string, bool\\|string given\\.$#"
-            count: 1
-            path: src/ThemeFusionApi.php
-        -
-            message: "#Parameter \\#2 \\$str of function explode expects string, bool\\|string given\\.#"
-            count: 1
-            path: src/ThemeFusionApi.php

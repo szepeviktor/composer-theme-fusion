@@ -27,12 +27,12 @@ Get its value with e.g. WP-CLI `wp option get fusion_registration_data`.
 
 ```json
 {
-  "config": {
-    "theme-fusion": {
-      "token": "YOUR THEME-FUSION TOKEN",
-      "themeVersion": "YOUR AVADA THEME VERSION, EG. '6.2.2'"
+    "config": {
+        "theme-fusion": {
+            "token": "YOUR THEME-FUSION TOKEN",
+            "themeVersion": "YOUR AVADA THEME VERSION, EG. '6.2.2'"
+        }
     }
-  }
 }
 ```
 

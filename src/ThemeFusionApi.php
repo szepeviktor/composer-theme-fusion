@@ -7,7 +7,7 @@ namespace SzepeViktor\Composer\ThemeFusion;
 use Composer\Config;
 use Composer\Factory;
 use Composer\IO\IOInterface;
-use Composer\Util\RemoteFilesystem;
+use Composer\Util\HttpDownloader;
 
 class ThemeFusionApi
 {
@@ -19,9 +19,9 @@ class ThemeFusionApi
     protected $token;
 
     /**
-     * @var RemoteFilesystem
+     * @var HttpDownloader
      */
-    protected $remoteFilesystem;
+    protected $httpDownloader;
 
     /**
      * @var string
@@ -30,7 +30,7 @@ class ThemeFusionApi
 
     public function __construct(IOInterface $io, Config $config, string $token, string $themeVersion)
     {
-        $this->remoteFilesystem = Factory::createHttpDownloader($io, $config);
+        $this->httpDownloader = Factory::createHttpDownloader($io, $config);
         $this->token = $token;
         $this->themeVersion = $themeVersion;
     }
@@ -42,12 +42,13 @@ class ThemeFusionApi
     {
         $plugins = [];
 
-        $apiResponse = $this->remoteFilesystem->get(
+        $apiResponse = $this->httpDownloader->get(
             self::API_BASE_URL . '/?' . \http_build_query(['avada_action' => 'get_plugins', 'avada_version' => $this->themeVersion])
         );
 
         if ($apiResponse->getStatusCode() === 200) {
             $pluginData = \json_decode($apiResponse->getBody(), true);
+            /** @var array<array<string>> $pluginData */
             foreach ($pluginData as $plugin) {
                 // Non-premium plugins have no version
                 if (! $plugin['premium']) {
@@ -87,7 +88,7 @@ class ThemeFusionApi
      */
     protected function getNonce(string $name): array
     {
-        $apiResponse = $this->remoteFilesystem->get(
+        $apiResponse = $this->httpDownloader->get(
             self::API_BASE_URL . '/?' . \http_build_query(
             [
                 'token' => $this->token,
@@ -97,12 +98,12 @@ class ThemeFusionApi
             ])
         );
 
-	if ($apiResponse->getStatusCode() !== 200) {
-		error_log('Theme Fusion API error:'. (string)$apiResponse->getStatusCode());
+    if ($apiResponse->getStatusCode() !== 200) {
+        error_log('Theme Fusion API error:'. (string)$apiResponse->getStatusCode());
             return ['', 0];
     }
 
-	$nonceData = \explode('|', $apiResponse->getBody());
+    $nonceData = \explode('|', $apiResponse->getBody());
 
         return [$nonceData[0], (int)$nonceData[1]];
     }

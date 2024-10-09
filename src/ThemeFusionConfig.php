@@ -11,7 +11,7 @@ class ThemeFusionConfig
     public const THEMEFUSION_CONFIG = 'theme-fusion';
 
     /**
-     * @var array<mixed, mixed>
+     * @var array<array-key, mixed>
      */
     protected $config;
 
@@ -22,7 +22,7 @@ class ThemeFusionConfig
 
     public function __construct(Config $composerConfig)
     {
-	    $this->config = $composerConfig->get(self::THEMEFUSION_CONFIG);
+        $this->config = $composerConfig->get(self::THEMEFUSION_CONFIG);
 
         $this->valid = $this->config !== null
             && \array_key_exists('token', $this->config)

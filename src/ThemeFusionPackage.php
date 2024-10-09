@@ -79,7 +79,8 @@ class ThemeFusionPackage extends Package
             return $this->distUrl;
         }
 
-	$this->distUrl = $this->api->getDownloadUrl($this->fusionName);
+        $this->distUrl = $this->api->getDownloadUrl($this->fusionName);
+
         return $this->distUrl;
     }
 
