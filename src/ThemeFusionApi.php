@@ -98,7 +98,7 @@ class ThemeFusionApi
         );
 
 	if ($apiResponse->getStatusCode() !== 200) {
-		error_log('blah');
+		error_log('Theme Fusion API error:'. (string)$apiResponse->getStatusCode());
             return ['', 0];
     }
 
