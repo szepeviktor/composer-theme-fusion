@@ -22,7 +22,7 @@ class ThemeFusionConfig
 
     public function __construct(Config $composerConfig)
     {
-        $this->config = $composerConfig->get(self::THEMEFUSION_CONFIG);
+	    $this->config = $composerConfig->get(self::THEMEFUSION_CONFIG);
 
         $this->valid = $this->config !== null
             && \array_key_exists('token', $this->config)

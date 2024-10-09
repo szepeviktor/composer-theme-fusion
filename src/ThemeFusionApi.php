@@ -11,7 +11,6 @@ use Composer\Util\RemoteFilesystem;
 
 class ThemeFusionApi
 {
-    public const API_DOMAIN = 'updates.theme-fusion.com';
     public const API_BASE_URL = 'https://updates.theme-fusion.com';
 
     /**
@@ -31,7 +30,7 @@ class ThemeFusionApi
 
     public function __construct(IOInterface $io, Config $config, string $token, string $themeVersion)
     {
-        $this->remoteFilesystem = Factory::createRemoteFilesystem($io, $config);
+        $this->remoteFilesystem = Factory::createHttpDownloader($io, $config);
         $this->token = $token;
         $this->themeVersion = $themeVersion;
     }
@@ -43,14 +42,12 @@ class ThemeFusionApi
     {
         $plugins = [];
 
-        $responseBody = $this->remoteFilesystem->getContents(
-            self::API_DOMAIN,
-            self::API_BASE_URL . '/?' . \http_build_query(['avada_action' => 'get_plugins', 'avada_version' => $this->themeVersion]),
-            false // Hide progress indicator
+        $apiResponse = $this->remoteFilesystem->get(
+            self::API_BASE_URL . '/?' . \http_build_query(['avada_action' => 'get_plugins', 'avada_version' => $this->themeVersion])
         );
 
-        if ($this->remoteFilesystem->findStatusCode($this->remoteFilesystem->getLastHeaders()) === 200) {
-            $pluginData = \json_decode($responseBody, true);
+        if ($apiResponse->getStatusCode() === 200) {
+            $pluginData = \json_decode($apiResponse->getBody(), true);
             foreach ($pluginData as $plugin) {
                 // Non-premium plugins have no version
                 if (! $plugin['premium']) {
@@ -82,6 +79,7 @@ class ThemeFusionApi
                 'avada_action' => 'get_download',
                 'item_name' => $name,
                 'ver' => $this->themeVersion,
+                'token' => $this->token,
             ]);
     }
     /**
@@ -89,24 +87,22 @@ class ThemeFusionApi
      */
     protected function getNonce(string $name): array
     {
-        $responseBody = $this->remoteFilesystem->getContents(
-            self::API_DOMAIN,
+        $apiResponse = $this->remoteFilesystem->get(
             self::API_BASE_URL . '/?' . \http_build_query(
             [
                 'token' => $this->token,
                 'avada_action' => 'request_download',
                 'item_name' => $name,
                 'ver' => $this->themeVersion,
-            ]),
-            false
+            ])
         );
 
-        if ($this->remoteFilesystem->findStatusCode($this->remoteFilesystem->getLastHeaders()) !== 200) {
+	if ($apiResponse->getStatusCode() !== 200) {
+		error_log('Theme Fusion API error:'. (string)$apiResponse->getStatusCode());
             return ['', 0];
-        }
+    }
 
-        // Nonce and timestamp
-        $nonceData = \explode('|', $responseBody);
+	$nonceData = \explode('|', $apiResponse->getBody());
 
         return [$nonceData[0], (int)$nonceData[1]];
     }

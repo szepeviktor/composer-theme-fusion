@@ -34,8 +34,7 @@ class ThemeFusionPackage extends Package
     public function __construct(string $fusionName, string $slug, string $prettyVersion, string $distUrl, ThemeFusionApi $api)
     {
         $this->fusionName = $fusionName;
-        // FIXME Ditch url?
-        $this->distUrl = $distUrl;
+        $this->distUrl = null;
         $this->api = $api;
 
         $versionParser = new VersionParser();
@@ -58,7 +57,7 @@ class ThemeFusionPackage extends Package
     /**
      * {@inheritDoc}
      */
-    public function getDistType()
+    public function getDistType(): ?string
     {
         return 'zip';
     }
@@ -80,8 +79,7 @@ class ThemeFusionPackage extends Package
             return $this->distUrl;
         }
 
-        $this->distUrl = $this->api->getDownloadUrl($this->fusionName);
-
+	$this->distUrl = $this->api->getDownloadUrl($this->fusionName);
         return $this->distUrl;
     }
 
